@@ -1,0 +1,32 @@
+#aesirx-analytics-blocking-cookies {
+  min-width: 800px;
+  .aesirx-analytics-cookie-row {
+    & > td {
+      padding-top: 0;
+      padding-left: 0;
+      input {
+        width: 100%;
+      }
+    }
+  }
+}
+.settings_page_aesirx-analytics-plugin {
+  ul.description,
+  p.description {
+    max-width: 800px;
+    margin-top: 12px;
+  }
+  ul.description {
+    list-style-type: disc;
+    padding-left: 20px;
+    color: #646970;
+  }
+}
+.aesirx-analytics-cookie-plugin {
+  .aesirx-analytics-cookie-plugin-item {
+    & > td {
+      padding-top: 0;
+      padding-left: 0;
+    }
+  }
+}

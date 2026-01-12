@@ -1,0 +1,11 @@
+<?php
+
+global $wpdb;
+
+$aesirx_analytics_pro_sql = [];
+
+// Add a new column 'region' to the analytics_visitors table
+$aesirx_analytics_pro_sql[] = "ALTER TABLE `{$wpdb->prefix}analytics_visitors` ADD `region` VARCHAR(255) NULL DEFAULT NULL;";
+
+// Update geo_created_at to NULL where city is not empty and is not NULL
+$aesirx_analytics_pro_sql[] = "UPDATE `{$wpdb->prefix}analytics_visitors` SET geo_created_at = NULL WHERE city != '' AND city IS NOT NULL;";
