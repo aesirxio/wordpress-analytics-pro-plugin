@@ -15,7 +15,7 @@ The tracking from your WordPress site will be stored in the Mongo database on th
 
 To install this you will need to clone this repo locally with command:
 
-`git clone https://github.com/aesirxio/wordpress-analytics-plugin.git`
+`git clone https://github.com/aesirxio/wordpress-analytics-pro-plugin.git`
 
 ## PHP set up
 

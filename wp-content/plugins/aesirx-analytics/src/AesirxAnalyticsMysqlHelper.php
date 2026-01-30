@@ -293,16 +293,21 @@ if (!class_exists('AesirxAnalyticsMysqlHelper')) {
         
                 foreach ($filter_array as $key => $val) {
                     $list = is_array($val) ? $val : [$val];
+                    if (empty($list)) {
+                        continue;
+                    }
+                    $placeholders = implode(',', array_fill(0, count($list), '%s'));
                     switch ($key) {
                         case "attribute_name":
                             if ($is_not) {
-                                $where_clause[] = '#__analytics_event_attributes.event_uuid IS NULL 
-                                    OR #__analytics_event_attributes.name NOT IN (%s)';
-                                $bind[] = implode(', ', $list);
+                                $where_clause[] =
+                                    "(#__analytics_event_attributes.event_uuid IS NULL
+                                    OR #__analytics_event_attributes.name NOT IN ($placeholders))";
                             } else {
-                                $where_clause[] = '#__analytics_event_attributes.name IN (%s)';
-                                $bind[] = implode(', ', $list);
+                                $where_clause[] =
+                                    "#__analytics_event_attributes.name IN ($placeholders)";
                             }
+                            $bind = array_merge($bind, $list);
                             break;
                         case "attribute_value":
                             if ($is_not) {
@@ -1333,6 +1338,44 @@ if (!class_exists('AesirxAnalyticsMysqlHelper')) {
             }
         
             return $og_data;
+        }
+
+        function aesirx_analytics_get_api($url) {
+            $response = wp_remote_get( $url );
+            if ( is_wp_error( $response )) {
+              add_settings_error(
+                'aesirx_analytics_pro_plugin_options',
+                'trial',
+                esc_html__('Something went wrong. Please contact the administrator', 'aesirx-analytics'),
+                'error'
+              );
+              return false;
+            } else {
+              return $response;
+            }
+        }
+
+        function aesirx_analytics_format_response_utm(array $row) {
+            return [
+                'link' => $row['link'],
+                'domain' => $row['domain'],
+                'publish' => (bool) $row['publish'],
+                'campaign_label' => $row['campaign_label'],
+                'utm_source' => $row['utm_source'],
+                'utm_medium' => $row['utm_medium'],
+                'utm_campaign' => $row['utm_campaign'],
+                'utm_id' => $row['utm_id'],
+                'utm_term' => $row['utm_term'],
+                'utm_content' => $row['utm_content'],
+                'value' => (int) $row['value'],
+                'value_type' => $row['value_type'],
+                'event_type' => $row['event_type'],
+                'engagement_weight' => (int) $row['engagement_weight'],
+                'is_generated' => (bool) $row['is_generated'],
+                '_id' => [
+                    '$oid' => $row['id'],
+                ],
+            ];
         }
     }
 }

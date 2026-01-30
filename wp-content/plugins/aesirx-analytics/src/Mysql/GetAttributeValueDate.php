@@ -8,7 +8,6 @@ Class AesirX_Analytics_Get_Attribute_Value_Date extends AesirxAnalyticsMysqlHelp
     function aesirx_analytics_mysql_execute($params = [])
     {
         global $wpdb;
-
         $where_clause = [];
         $bind = [];
         $hash_map = [];
@@ -17,28 +16,27 @@ Class AesirX_Analytics_Get_Attribute_Value_Date extends AesirxAnalyticsMysqlHelp
         parent::aesirx_analytics_add_attribute_filters($params, $where_clause, $bind);
 
         $total_sql =
-            "SELECT COUNT(DISTINCT #__analytics_event_attributes.name, DATE_FORMAT(#__analytics_events.start, '%%Y-%%m-%%d')) as total
-            from `#__analytics_event_attributes`
-            left join `#__analytics_events` on #__analytics_event_attributes.event_uuid = #__analytics_events.uuid
-            left join `#__analytics_visitors` on #__analytics_visitors.uuid = #__analytics_events.visitor_uuid
+            "SELECT COUNT(DISTINCT {$wpdb->prefix}analytics_event_attributes.name, DATE_FORMAT({$wpdb->prefix}analytics_events.start, '%%Y-%%m-%%d')) as total
+            from `{$wpdb->prefix}analytics_event_attributes`
+            left join `{$wpdb->prefix}analytics_events` on {$wpdb->prefix}analytics_event_attributes.event_uuid = {$wpdb->prefix}analytics_events.uuid
+            left join `{$wpdb->prefix}analytics_visitors` on {$wpdb->prefix}analytics_visitors.uuid = {$wpdb->prefix}analytics_events.visitor_uuid
             WHERE " . implode(" AND ", $where_clause);
 
         $sql =
             "SELECT
-            #__analytics_event_attributes.name,
-            DATE_FORMAT(#__analytics_events.start, '%%Y-%%m-%%d') as date
-            FROM #__analytics_event_attributes
-            LEFT JOIN #__analytics_events ON #__analytics_event_attributes.event_uuid = #__analytics_events.uuid
-            LEFT JOIN #__analytics_visitors ON #__analytics_visitors.uuid = #__analytics_events.visitor_uuid 
+            {$wpdb->prefix}analytics_event_attributes.name,
+            DATE_FORMAT({$wpdb->prefix}analytics_events.start, '%%Y-%%m-%%d') as date
+            FROM {$wpdb->prefix}analytics_event_attributes
+            LEFT JOIN {$wpdb->prefix}analytics_events ON {$wpdb->prefix}analytics_event_attributes.event_uuid = {$wpdb->prefix}analytics_events.uuid
+            LEFT JOIN {$wpdb->prefix}analytics_visitors ON {$wpdb->prefix}analytics_visitors.uuid = {$wpdb->prefix}analytics_events.visitor_uuid 
             WHERE " . implode(" AND ", $where_clause) .
-            " GROUP BY #__analytics_event_attributes.name, date";
+            " GROUP BY {$wpdb->prefix}analytics_event_attributes.name, date";
 
         $sort = self::aesirx_analytics_add_sort($params, ["name", "date"], "date");
 
         if (!empty($sort)) {
             $sql .= " ORDER BY " . implode(", ", $sort);
         }
-
         $list_response = parent::aesirx_analytics_get_list($sql, $total_sql, $params, [], $bind);
 
         if (is_wp_error($list_response)) {
@@ -46,7 +44,6 @@ Class AesirX_Analytics_Get_Attribute_Value_Date extends AesirxAnalyticsMysqlHelp
         }
         
         $list = $list_response['collection'];
-
         $collection = [];
 
         if ($list) {
@@ -54,26 +51,32 @@ Class AesirX_Analytics_Get_Attribute_Value_Date extends AesirxAnalyticsMysqlHelp
                 return $e['name'];
             }, $list);
 
-            // doing direct database calls to custom tables
-            $secondArray = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-                $wpdb->prepare(
-                    "SELECT 
-                    DATE_FORMAT( {$wpdb->prefix}analytics_events.start, '%%Y-%%m-%%d') as date,
-                    {$wpdb->prefix}analytics_event_attributes.name, 
+            $placeholders = implode(',', array_fill(0, count($names), '%s'));
+
+            $sql = "
+                SELECT 
+                    DATE_FORMAT({$wpdb->prefix}analytics_events.start, '%%Y-%%m-%%d') AS date,
+                    {$wpdb->prefix}analytics_event_attributes.name,
                     {$wpdb->prefix}analytics_event_attributes.value,
-                    COUNT( {$wpdb->prefix}analytics_event_attributes.id) as count
-                    from {$wpdb->prefix}analytics_event_attributes
-                    left join {$wpdb->prefix}analytics_events'
-                        on {$wpdb->prefix}analytics_event_attributes.event_uuid = {$wpdb->prefix}analytics_events.uuid
-                    left join {$wpdb->prefix}analytics_visitors on {$wpdb->prefix}analytics_visitors.uuid = {$wpdb->prefix}analytics_events.visitor_uuid
-                    WHERE {$wpdb->prefix}analytics_event_attributes.name IN (%s)" .
-                    " GROUP BY {$wpdb->prefix}analytics_event_attributes.name,  {$wpdb->prefix}analytics_event_attributes.value",
-                    "'" . implode("', '", $names) . "'"
-                )
+                    COUNT({$wpdb->prefix}analytics_event_attributes.id) AS count
+                FROM {$wpdb->prefix}analytics_event_attributes
+                LEFT JOIN {$wpdb->prefix}analytics_events
+                    ON {$wpdb->prefix}analytics_event_attributes.event_uuid = {$wpdb->prefix}analytics_events.uuid
+                LEFT JOIN {$wpdb->prefix}analytics_visitors
+                    ON {$wpdb->prefix}analytics_visitors.uuid = {$wpdb->prefix}analytics_events.visitor_uuid
+                WHERE {$wpdb->prefix}analytics_event_attributes.name IN ($placeholders)
+                GROUP BY
+                    date,
+                    {$wpdb->prefix}analytics_event_attributes.name,
+                    {$wpdb->prefix}analytics_event_attributes.value
+            ";
+
+            $secondArray = $wpdb->get_results(
+                $wpdb->prepare($sql, $names)
             );
 
             foreach ($secondArray as $second) {
-                $key_string = $second->date . '-' . $second->name;
+                $key_string = $second->date . '||' . $second->name;
             
                 if (!isset($hash_map[$key_string])) {
                     $sub_hash = [];
@@ -96,7 +99,7 @@ Class AesirX_Analytics_Get_Attribute_Value_Date extends AesirxAnalyticsMysqlHelp
                     ];
                 }
             
-                $key = explode('-', $key_string);
+                $key = explode('||', $key_string);
             
                 $collection[] = (object)[
                     'date' => $key[0],

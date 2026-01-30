@@ -4,8 +4,44 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "44e76ba167c7aa21c61bf4fd17b753ef",
+    "content-hash": "fc3f5cb3f7b9aaabcfbc09c926c81d96",
     "packages": [
+        {
+            "name": "aesirx/aesirx_analytics_lib",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aesirxio/aesirx-analytics-lib.git",
+                "reference": "3625667890f47db2a7a32c2f23d7a8129094b015"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aesirxio/aesirx-analytics-lib/zipball/3625667890f47db2a7a32c2f23d7a8129094b015",
+                "reference": "3625667890f47db2a7a32c2f23d7a8129094b015",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "pecee/simple-router": "^5",
+                "php": ">=7.2"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AesirxAnalyticsLib\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Aesirx analytics library.",
+            "support": {
+                "source": "https://github.com/aesirxio/aesirx-analytics-lib/tree/master"
+            },
+            "time": "2026-01-30T09:56:13+00:00"
+        },
         {
             "name": "guzzlehttp/guzzle",
             "version": "7.10.0",
@@ -395,42 +431,6 @@
             "time": "2023-12-11T21:48:25+00:00"
         },
         {
-            "name": "php-aesirx/aesirx_analytics_lib",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/NguyenBao10/aesirx-analytics-lib.git",
-                "reference": "b6128501b9f431697bce61020856bdb9ca39cd0b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/NguyenBao10/aesirx-analytics-lib/zipball/b6128501b9f431697bce61020856bdb9ca39cd0b",
-                "reference": "b6128501b9f431697bce61020856bdb9ca39cd0b",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "pecee/simple-router": "^5",
-                "php": ">=7.2"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "AesirxAnalyticsLib\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "description": "Aesirx analytics library.",
-            "support": {
-                "source": "https://github.com/NguyenBao10/aesirx-analytics-lib/tree/master"
-            },
-            "time": "2024-09-20T07:16:46+00:00"
-        },
-        {
             "name": "psr/http-client",
             "version": "1.0.3",
             "source": {
@@ -636,20 +636,20 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v2.5.4",
+            "version": "v3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "605389f2a7e5625f273b53960dc46aeaf9c62918"
+                "reference": "63afe740e99a13ba87ec199bb07bbdee937a5b62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/605389f2a7e5625f273b53960dc46aeaf9c62918",
-                "reference": "605389f2a7e5625f273b53960dc46aeaf9c62918",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/63afe740e99a13ba87ec199bb07bbdee937a5b62",
+                "reference": "63afe740e99a13ba87ec199bb07bbdee937a5b62",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1"
+                "php": ">=8.1"
             },
             "type": "library",
             "extra": {
@@ -658,7 +658,7 @@
                     "name": "symfony/contracts"
                 },
                 "branch-alias": {
-                    "dev-main": "2.5-dev"
+                    "dev-main": "3.6-dev"
                 }
             },
             "autoload": {
@@ -683,7 +683,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v2.5.4"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.6.0"
             },
             "funding": [
                 {
@@ -699,7 +699,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-25T14:11:13+00:00"
+            "time": "2024-09-25T14:21:43+00:00"
         }
     ],
     "packages-dev": [
@@ -1336,7 +1336,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "php-aesirx/aesirx_analytics_lib": 20
+        "aesirx/aesirx_analytics_lib": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

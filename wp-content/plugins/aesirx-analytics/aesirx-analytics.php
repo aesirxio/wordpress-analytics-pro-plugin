@@ -3,7 +3,7 @@
  * Plugin Name: AesirX Analytics
  * Plugin URI: https://analytics.aesirx.io?utm_source=wpplugin&utm_medium=web&utm_campaign=wordpress&utm_id=aesirx&utm_term=wordpress&utm_content=analytics
  * Description: Aesirx analytics plugin. When you join forces with AesirX, you're not just becoming a Partner - you're also becoming a freedom fighter in the battle for privacy! Earn 25% Affiliate Commission <a href="https://aesirx.io/partner?utm_source=wpplugin&utm_medium=web&utm_campaign=wordpress&utm_id=aesirx&utm_term=wordpress&utm_content=analytics">[Click to Join]</a>
- * Version: 5.0.0
+ * Version: 1.0.0
  * Author: aesirx.io
  * Author URI: https://aesirx.io/
  * Domain Path: /languages
@@ -69,14 +69,6 @@ if (aesirx_analytics_pro_config_is_ok()) {
                 : rtrim($options['domain'] ?? '', '/');
 
         $trackEcommerce = ($options['track_ecommerce'] ?? 'true') === 'true' ? 'true': 'false';
-        $blockingCookiesPath = isset($options['blocking_cookies']) && count($options['blocking_cookies']) > 0 ? $options['blocking_cookies'] : [];
-        $arrayCookiesPlugins =  isset($options['blocking_cookies_plugins']) &&  count($options['blocking_cookies_plugins']) > 0 ? $options['blocking_cookies_plugins'] : [];
-        $prefix = "wp-content/plugins/";
-        $blockingCookiesPlugins =  isset($options['blocking_cookies_plugins']) &&  count($options['blocking_cookies_plugins']) > 0 ? array_map(function($value) use ($prefix) {
-            return $prefix . $value;
-        }, $arrayCookiesPlugins) : [];
-        $blockingCookies = array_unique(array_merge($blockingCookiesPath, $blockingCookiesPlugins), SORT_REGULAR);
-        $blockingCookiesJSON = isset($options['blocking_cookies']) && count($options['blocking_cookies']) > 0 ? wp_json_encode($blockingCookies) : '[]';
         $clientId = $options['clientid'] ?? '';
         $secret = $options['secret'] ?? '';
 
@@ -87,7 +79,6 @@ if (aesirx_analytics_pro_config_is_ok()) {
             'window.aesirx1stparty="' . esc_attr($domain) . '";
             window.aesirxClientID="' . esc_attr($clientId) . '";
             window.aesirxClientSecret="' . esc_attr($secret) . '";
-            window.blockJSDomains=' . $blockingCookiesJSON . ';
             window.aesirxTrackEcommerce="' . esc_attr($trackEcommerce) . '";',
             'before');
     });
@@ -141,16 +132,6 @@ add_filter('plugin_action_links_' . plugin_basename(__FILE__), function ($links)
         '<a href="%s">%s</a>',
         esc_url($url),
         esc_html__('Settings', 'aesirx-analytics')
-    );
-
-    $pro_url = 'https://aesirx.io/solutions/analytics';
-
-    $links[] = sprintf(
-        '<a href="%s" target="_blank" style="color:#d63638;font-weight:600;">
-            %s
-        </a>',
-        esc_url($pro_url),
-        esc_html__('Upgrade to Pro', 'aesirx-analytics')
     );
   return $links;
 });
@@ -295,41 +276,6 @@ register_activation_hook(__FILE__, function () {
     }
 });
 
-function aesirx_analytics_display_pro_upsell_notice() {
-
-    if (!current_user_can('manage_options')) {
-        return;
-    }
-
-    if (defined('AESIRX_ANALYTICS_PRO')) {
-        return;
-    }
-
-    if (!get_transient('aesirx_analytics_pro_upsell_notice')) {
-        return;
-    }
-
-    $pro_url = 'https://aesirx.io/solutions/analytics';
-    ?>
-    <div class="notice notice-info is-dismissible aesirx-pro-upsell">
-        <p>
-            <strong><?php esc_html_e('Unlock AesirX Analytics Pro 🚀', 'aesirx-analytics'); ?></strong><br>
-            <?php esc_html_e(
-                'Get real-time visitors, UTM & Tag Value Mapping, advanced Analytics dashboards, and priority support.',
-                'aesirx-analytics'
-            ); ?>
-        </p>
-        <p>
-            <a href="<?php echo esc_url($pro_url); ?>"
-               target="_blank"
-               class="button button-primary">
-                <?php esc_html_e('Upgrade to Pro', 'aesirx-analytics'); ?>
-            </a>
-        </p>
-    </div>
-    <?php
-}
-add_action('admin_notices', 'aesirx_analytics_display_pro_upsell_notice');
 
 add_action('admin_enqueue_scripts', function () {
     wp_enqueue_script('jquery');
@@ -352,9 +298,18 @@ add_action('wp_ajax_aesirx_dismiss_pro_upsell', function () {
 });
 
 add_action('admin_init', function () {
-    if (get_option('aesirx_analytics_pro_do_activation_redirect', false)) {
-        if (wp_safe_redirect("options-general.php?page=aesirx-analytics-plugin")) {
-            exit();
-        }
+    if (!get_option('aesirx_analytics_pro_do_activation_redirect')) {
+        return;
     }
+    delete_option('aesirx_analytics_pro_do_activation_redirect');
+    if (wp_doing_ajax() || wp_doing_cron()) {
+        return;
+    }
+    if (isset($_GET['page']) && $_GET['page'] === 'aesirx-analytics-plugin') {
+        return;
+    }
+    wp_safe_redirect(
+        admin_url('options-general.php?page=aesirx-analytics-plugin')
+    );
+    exit;
 });

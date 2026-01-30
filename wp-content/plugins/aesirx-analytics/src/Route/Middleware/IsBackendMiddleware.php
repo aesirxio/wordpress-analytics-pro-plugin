@@ -13,7 +13,10 @@ class IsBackendMiddleware implements IMiddleware
   public function handle(Request $request): void
   {
     if (!current_user_can('administrator')) {
-      throw new HttpException(esc_html__('Permission denied!', 'aesirx-analytics'), 403);
+      $url = $request->getUrl()->getOriginalPath();
+			if ((strpos($url, 'datastream/template') === false || strpos($url, 'datastream/utm') === false) && strpos($url, 'statement') === false) {
+        throw new HttpException(esc_html__('Permission denied!', 'aesirx-consent'), 403);
+			}
     }
   }
 }

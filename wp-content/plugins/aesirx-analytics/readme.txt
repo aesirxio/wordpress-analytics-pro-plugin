@@ -3,7 +3,7 @@ Contributors: aesirx,vikingtechguy,nixa999,nguyenbao10,vietnguyen1406,devphutran
 Tags: analytics, wordpress analytics, statistics, tracking, visitor tracking
 Requires at least: 5.9
 Tested up to: 6.9
-Stable tag: 5.0.0
+Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPL 3.0
 
@@ -57,7 +57,7 @@ There are no third-party services required to run AesirX Analytics.
 = Source code for compressed content =
 
 We use the **AesirX Analytics** to store and manage analytics data from your site and dispaly the relevant data.
-The human readable source code for the AesirX Analytics files can be found here https://github.com/aesirxio/wordpress-analytics-plugin.
+The human readable source code for the AesirX Analytics files can be found here https://github.com/aesirxio/wordpress-analytics-pro-plugin.
 
 = Validation =
 
