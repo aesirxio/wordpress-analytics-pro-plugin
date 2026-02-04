@@ -1377,5 +1377,19 @@ if (!class_exists('AesirxAnalyticsMysqlHelper')) {
                 ],
             ];
         }
+
+        function aesirx_analytics_format_response_tag_event(array $row) {
+            return [
+                'event_name' => $row['event_name'],
+                'domain' => $row['domain'],
+                'publish' => (bool) $row['publish'],
+                'metric_value' => (int) $row['metric_value'],
+                'engagement_value' => (int) $row['engagement_value'],
+                'is_generated' => (bool) $row['is_generated'],
+                '_id' => [
+                    '$oid' => $row['id'],
+                ],
+            ];
+        }
     }
 }

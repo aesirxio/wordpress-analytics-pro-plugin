@@ -697,14 +697,14 @@ add_action('admin_enqueue_scripts', function ($hook) {
       $hook === 'toplevel_page_aesirx-bi-utm-tracking' || 
       $hook === 'toplevel_page_aesirx-bi-woocommerce' || 
       $hook === 'toplevel_page_aesirx-bi-acquisition' || 
-      $hook === 'aesirx-bi_page_aesirx-bi-visitors' ||
-      $hook === 'aesirx-bi_page_aesirx-bi-flow-list' ||
+      $hook === 'aesirx-analytics_page_aesirx-bi-visitors' ||
+      $hook === 'aesirx-analytics_page_aesirx-bi-flow-list' ||
       $hook === 'admin_page_aesirx-bi-visitors-locations' || 
       $hook === 'admin_page_aesirx-bi-visitors-flow' || 
       $hook === 'admin_page_aesirx-bi-visitors-platforms' || 
       $hook === 'admin_page_aesirx-bi-visitors-realtime' || 
       $hook === 'admin_page_aesirx-bi-flow' || 
-      $hook === 'aesirx-bi_page_aesirx-bi-behavior' ||
+      $hook === 'aesirx-analytics_page_aesirx-bi-behavior' ||
       $hook === 'admin_page_aesirx-bi-behavior-events' ||
       $hook === 'admin_page_aesirx-bi-behavior-events-generator' ||
       $hook === 'admin_page_aesirx-bi-behavior-outlinks' ||
@@ -712,15 +712,15 @@ add_action('admin_enqueue_scripts', function ($hook) {
       $hook === 'admin_page_aesirx-bi-tag-events' ||
       $hook === 'admin_page_aesirx-bi-tag-events-link' ||
       $hook === 'admin_page_aesirx-bi-tag-events-edit' ||
-      $hook === 'aesirx-bi_page_aesirx-bi-utm-tracking' ||
+      $hook === 'aesirx-analytics_page_aesirx-bi-utm-tracking' ||
       $hook === 'admin_page_aesirx-bi-utm-links' ||
       $hook === 'admin_page_aesirx-bi-utm-links-add' ||
       $hook === 'admin_page_aesirx-bi-utm-links-link' ||
       $hook === 'admin_page_aesirx-bi-utm-links-edit' ||
-      $hook === 'aesirx-bi_page_aesirx-bi-acquisition' ||
+      $hook === 'aesirx-analytics_page_aesirx-bi-acquisition' ||
       $hook === 'admin_page_aesirx-bi-acquisition-search-engines' ||
       $hook === 'admin_page_aesirx-bi-acquisition-campaigns' ||
-      $hook === 'aesirx-bi_page_aesirx-bi-woocommerce' ||
+      $hook === 'aesirx-analytics_page_aesirx-bi-woocommerce' ||
       $hook === 'admin_page_aesirx-bi-woocommerce-product' ||
       $hook === 'admin_page_aesirx-bi-acquisition-campaigns') {
     wp_enqueue_script('aesirx-analytics-notice', plugins_url('assets/vendor/aesirx-analytics-notice.js', __DIR__), array('jquery'), false, true);

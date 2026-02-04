@@ -3264,10 +3264,10 @@ aesirx-dam-app@^1.5.0:
     simple-react-validator "^1.6.2"
     web-vitals "^3.3.1"
 
-aesirx-lib@*, aesirx-lib@^2.1.2, aesirx-lib@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/aesirx-lib/-/aesirx-lib-2.3.1.tgz#d71ea0217210261abdfb25d785fb30f335861741"
-  integrity sha512-3zIrhGpdsdvR21hpO7HJxnFq+cXy4S6KxcpBlzDPihA7ivaKH1zR/rdICJrBVK5jPtlE+Paf/j/Nm9EtuEOoMg==
+aesirx-lib@*, aesirx-lib@^2.1.2, aesirx-lib@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/aesirx-lib/-/aesirx-lib-2.3.2.tgz#a980ac20ec36b4e0ca9cc19276a4bb00fef4bed2"
+  integrity sha512-xTQ8W+Z+AnNffLaVBLqouTesruF8G/2Dx2NSpAStmQ0TbbUSyGd8URBikFewIW8lvKSnAhxKT4qE3x5MEHmM6w==
   dependencies:
     axios "^1.7.4"
     axios-auth-refresh "^3.3.6"

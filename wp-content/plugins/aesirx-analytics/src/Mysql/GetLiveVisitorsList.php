@@ -8,11 +8,23 @@ Class AesirX_Analytics_Get_Live_Visitors_List extends AesirxAnalyticsMysqlHelper
     {
         global $wpdb;
 
+        $realtime_sync_minutes = 5;
+
+        if (!empty($params['filter']['domain'])) {
+            $options = get_option('aesirx_analytics_pro_plugin_setting', []);
+            if (!empty($options['datastream_realtime_sync'])) {
+                $realtime_sync_minutes = max(
+                    5,
+                    (int) $options['datastream_realtime_sync']
+                );
+            }
+        }
+
         $where_clause = [
-            "#__analytics_flows.end >= NOW() - INTERVAL 30 MINUTE",
+            "#__analytics_flows.end >= NOW() - INTERVAL %d MINUTE",
             "#__analytics_visitors.device != 'bot'"
         ];
-        $bind = [];
+        $bind = [$realtime_sync_minutes];
 
         unset($params["filter"]["start"]);
         unset($params["filter"]["end"]);
@@ -126,6 +138,43 @@ Class AesirX_Analytics_Get_Live_Visitors_List extends AesirxAnalyticsMysqlHelper
         ); 
         
         $hash_attributes = [];
+        
+        // --------------------------------------------------
+        // tag_event data
+        // --------------------------------------------------
+        $tag_events = $wpdb->get_results( // phpcs:ignore
+            "SELECT event_name, domain, metric_value
+            FROM {$wpdb->prefix}analytics_tag_event
+            WHERE publish = 1"
+        );
+
+        $tag_metric_map = [];
+
+        foreach ($tag_events as $tag) {
+            $key = $tag->event_name;
+            $tag_metric_map[$key] = (int) $tag->metric_value;
+        }
+
+        // --------------------------------------------------
+        // utm data
+        // --------------------------------------------------
+        $utm_rules = $wpdb->get_results( // phpcs:ignore
+            "SELECT link, domain, value, value_type, campaign_label
+            FROM {$wpdb->prefix}analytics_utm
+            WHERE publish = 1"
+        );
+
+        $utm_map = [];
+        foreach ($utm_rules as $utm) {
+            $normalized_link = $utm->link;
+            $key = $normalized_link;
+
+            $utm_map[$key] = [
+                'value' => (int) $utm->value,
+                'value_type' => $utm->value_type,
+                'campaign_label' => $utm->campaign_label,
+            ];
+        }
 
         foreach ($attributes as $second) {
             $attr = (object)[
@@ -142,6 +191,44 @@ Class AesirX_Analytics_Get_Live_Visitors_List extends AesirxAnalyticsMysqlHelper
         $hash_map = [];
 
         foreach ($events as $second) {
+            // --------------------------------------------------
+            // calculate tag_metric_value
+            // --------------------------------------------------
+            $tag_metric_value = 0;
+            $tag_key = $second->event_name;
+            $tag_metric_value = $tag_metric_map[$tag_key] ?? 0;
+
+            // --------------------------------------------------
+            // calculate utm_value and utm_campaign_label
+            // --------------------------------------------------
+            $utm_value = 0;
+            $utm_campaign_label = null;
+            $normalized_url = $second->url;
+            $utm_key = $normalized_url;
+
+            if (isset($utm_map[$utm_key])) {
+                $utm_rule = $utm_map[$utm_key];
+
+                // match value_type with event_name (same as Rust)
+                if ($utm_rule['value_type'] === $second->event_name) {
+                    $utm_value = $utm_rule['value'];
+                }
+
+                // campaign label logic (same priority as Rust)
+                if (!empty($hash_attributes[$second->uuid])) {
+                    foreach ($hash_attributes[$second->uuid] as $attr) {
+                        if ($attr->name === 'utm_campaign' && $attr->value !== '') {
+                            $utm_campaign_label = $attr->value;
+                            break;
+                        }
+                    }
+                }
+
+                if ($utm_campaign_label === null) {
+                    $utm_campaign_label = $utm_rule['campaign_label'];
+                }
+            }
+
             $visitor_event = [
                 'uuid' => $second->uuid,
                 'visitor_uuid' => $second->visitor_uuid,
@@ -153,6 +240,9 @@ Class AesirX_Analytics_Get_Live_Visitors_List extends AesirxAnalyticsMysqlHelper
                 'event_name' => $second->event_name,
                 'event_type' => $second->event_type,
                 'attributes' => $hash_attributes[$second->uuid] ?? [],
+                'utm_value' => $utm_value,
+                'tag_metric_value' => $tag_metric_value,
+                'utm_campaign_label' => $utm_campaign_label,
             ];
 
             if (!isset($hash_map[$second->flow_uuid])) {
@@ -161,7 +251,6 @@ Class AesirX_Analytics_Get_Live_Visitors_List extends AesirxAnalyticsMysqlHelper
                 $hash_map[$second->flow_uuid][$second->uuid] = $visitor_event;
             }
         }
-
         foreach ($list as $item) {
             $item = (object) $item;
             
@@ -183,6 +272,7 @@ Class AesirX_Analytics_Get_Live_Visitors_List extends AesirxAnalyticsMysqlHelper
 
             $collection[] = [
                 'uuid' => $item->uuid,
+                'flow_uuid' => $item->uuid,
                 'visitor_uuid' => $item->visitor_uuid,
                 'ip' => $item->ip,
                 'user_agent' => $item->user_agent,

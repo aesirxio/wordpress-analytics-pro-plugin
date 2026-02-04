@@ -3,7 +3,7 @@
 
 use AesirxAnalytics\AesirxAnalyticsMysqlHelper;
 
-Class AesirX_Analytics_Get_Datastream_UTM extends AesirxAnalyticsMysqlHelper
+Class AesirX_Analytics_Get_Datastream_Tag_Event extends AesirxAnalyticsMysqlHelper
 {
     function aesirx_analytics_mysql_execute($params = [])
     {
@@ -19,7 +19,7 @@ Class AesirX_Analytics_Get_Datastream_UTM extends AesirxAnalyticsMysqlHelper
             );
         }
 
-        $table = $wpdb->prefix . 'analytics_utm';
+        $table = $wpdb->prefix . 'analytics_tag_event';
 
         $rows = $wpdb->get_results(
             $wpdb->prepare(
@@ -34,7 +34,7 @@ Class AesirX_Analytics_Get_Datastream_UTM extends AesirxAnalyticsMysqlHelper
         }
 
         $result = array_map(function ($row) {
-            return parent::aesirx_analytics_format_response_utm($row);
+            return parent::aesirx_analytics_format_response_tag_event($row);
         }, $rows);
 
         return $result;

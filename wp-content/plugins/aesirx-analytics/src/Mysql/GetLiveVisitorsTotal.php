@@ -8,11 +8,22 @@ Class AesirX_Analytics_Get_Live_Visitors_Total extends AesirxAnalyticsMysqlHelpe
     {
         global $wpdb;
 
+        $realtime_sync_minutes = 5;
+
+        if (!empty($params['filter']['domain'])) {
+            $options = get_option('aesirx_analytics_pro_plugin_setting', []);
+            if (!empty($options['datastream_realtime_sync'])) {
+                $realtime_sync_minutes = max(
+                    5,
+                    (int) $options['datastream_realtime_sync']
+                );
+            }
+        }
         $where_clause = [
-            "#__analytics_flows.end >= NOW() - INTERVAL 30 MINUTE",
+            "#__analytics_flows.end >= NOW() - INTERVAL %d MINUTE",
             "#__analytics_visitors.device != 'bot'"
         ];
-        $bind = [];
+        $bind = [$realtime_sync_minutes];
 
         unset($params["filter"]["start"]);
         unset($params["filter"]["end"]);
@@ -23,8 +34,7 @@ Class AesirX_Analytics_Get_Live_Visitors_Total extends AesirxAnalyticsMysqlHelpe
             "SELECT COUNT(DISTINCT `#__analytics_flows`.`visitor_uuid`) as total
             from `#__analytics_flows`
             left join `#__analytics_visitors` on `#__analytics_visitors`.`uuid` = `#__analytics_flows`.`visitor_uuid`
-            WHERE " . implode(" AND ", $where_clause) . 
-            " GROUP BY `#__analytics_flows`.`visitor_uuid`";
+            WHERE " . implode(" AND ", $where_clause);
 
         $sql = str_replace("#__", $wpdb->prefix, $sql);
 

@@ -8,6 +8,18 @@ Class AesirX_Analytics_Get_Live_Visitors_Device extends AesirxAnalyticsMysqlHelp
     {
         global $wpdb;
 
+        $realtime_sync_minutes = 5;
+
+        if (!empty($params['filter']['domain'])) {
+            $options = get_option('aesirx_analytics_pro_plugin_setting', []);
+            if (!empty($options['datastream_realtime_sync'])) {
+                $realtime_sync_minutes = max(
+                    5,
+                    (int) $options['datastream_realtime_sync']
+                );
+            }
+        }
+
         unset($params["filter"]["start"]);
         unset($params["filter"]["end"]);
     
@@ -41,13 +53,14 @@ Class AesirX_Analytics_Get_Live_Visitors_Device extends AesirxAnalyticsMysqlHelp
         $where_clause = [
             "#__analytics_events.event_name = %s",
             "#__analytics_events.event_type = %s",
-            "#__analytics_events.end >= NOW() - INTERVAL 30 MINUTE",
+            "#__analytics_events.end >= NOW() - INTERVAL %d MINUTE",
             "#__analytics_visitors.device != 'bot'"
         ];
 
         $bind = [
             'visit',
-            'action'
+            'action',
+            $realtime_sync_minutes
         ];
 
         parent::aesirx_analytics_add_filters($params, $where_clause, $bind);
