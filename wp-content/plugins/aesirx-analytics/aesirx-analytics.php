@@ -116,7 +116,6 @@ if (aesirx_analytics_pro_config_is_ok()) {
 
 if (is_plugin_active('wp-crontrol/wp-crontrol.php')) {
     add_action('analytics_cron_geo', function () {
-        var_dump(aesirx_analytics_pro_config_is_ok('internal'));die;
         if (aesirx_analytics_pro_config_is_ok('internal')) {
             CliFactory::getCli()->processAnalytics(['job', 'geo']);
         }
