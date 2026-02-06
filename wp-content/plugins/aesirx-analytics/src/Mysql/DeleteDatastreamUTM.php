@@ -1,6 +1,6 @@
 <?php
 
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 use AesirxAnalytics\AesirxAnalyticsMysqlHelper;
 
 Class AesirX_Analytics_Delete_Datastream_UTM extends AesirxAnalyticsMysqlHelper
@@ -39,7 +39,7 @@ Class AesirX_Analytics_Delete_Datastream_UTM extends AesirxAnalyticsMysqlHelper
 
         // Delete rows
         $sql = "DELETE FROM $table WHERE id IN ($placeholders)";
-
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $wpdb->query(
             $wpdb->prepare($sql, $ids) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         );

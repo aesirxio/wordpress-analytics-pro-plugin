@@ -1,6 +1,6 @@
 <?php
 
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 use AesirxAnalytics\AesirxAnalyticsMysqlHelper;
 
 Class AesirX_Analytics_Get_Attribute_Value_UTM extends AesirxAnalyticsMysqlHelper
@@ -91,8 +91,9 @@ Class AesirX_Analytics_Get_Attribute_Value_UTM extends AesirxAnalyticsMysqlHelpe
             GROUP BY a.name, a.value
             HAVING campaign_label IS NOT NULL
         ";
-
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
         $rows = $wpdb->get_results(
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $wpdb->prepare($utm_sql, $names),
             ARRAY_A
         );

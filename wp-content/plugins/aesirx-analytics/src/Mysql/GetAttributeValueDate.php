@@ -1,6 +1,6 @@
 <?php
 
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 use AesirxAnalytics\AesirxAnalyticsMysqlHelper;
 
 Class AesirX_Analytics_Get_Attribute_Value_Date extends AesirxAnalyticsMysqlHelper
@@ -70,8 +70,9 @@ Class AesirX_Analytics_Get_Attribute_Value_Date extends AesirxAnalyticsMysqlHelp
                     {$wpdb->prefix}analytics_event_attributes.name,
                     {$wpdb->prefix}analytics_event_attributes.value
             ";
-
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
             $secondArray = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
                 $wpdb->prepare($sql, $names)
             );
 

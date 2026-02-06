@@ -1,6 +1,6 @@
 <?php
 
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 use AesirxAnalytics\AesirxAnalyticsMysqlHelper;
 
 Class AesirX_Analytics_Store_Datastream_Setting extends AesirxAnalyticsMysqlHelper

@@ -683,8 +683,10 @@ function aesirx_analytics_redirect_config() {
       $checked_page = array('aesirx-bi-dashboard', 'aesirx-bi-visitors', 'aesirx-bi-behavior', 'aesirx-bi-utm-tracking', 'aesirx-bi-woocommerce');
     
       if (in_array($query_params['page'], $checked_page, true) && !aesirx_analytics_pro_config_is_ok()) {
-        wp_redirect('/wp-admin/options-general.php?page=aesirx-analytics-plugin');
-        die;
+        wp_safe_redirect(
+            admin_url( 'options-general.php?page=aesirx-analytics-plugin' )
+        );
+        exit;
       }
     }
   }
@@ -723,7 +725,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
       $hook === 'aesirx-analytics_page_aesirx-bi-woocommerce' ||
       $hook === 'admin_page_aesirx-bi-woocommerce-product' ||
       $hook === 'admin_page_aesirx-bi-acquisition-campaigns') {
-    wp_enqueue_script('aesirx-analytics-notice', plugins_url('assets/vendor/aesirx-analytics-notice.js', __DIR__), array('jquery'), false, true);
+    wp_enqueue_script('aesirx-analytics-notice', plugins_url('assets/vendor/aesirx-analytics-notice.js', __DIR__), array('jquery'), '1.0.0', true);
     $analyticsProOptions = get_option('aesirx_analytics_pro_plugin_options');
 
     $protocols = ['http://', 'https://'];
@@ -896,13 +898,13 @@ function aesirx_analytics_trigger_trial() {
       $currentDate = new DateTime();
       $interval = $currentDate->diff($dateExpired);
       $daysLeft = $interval->days;
-      return wp_kses(sprintf(__("Your trial license ends in %1\$s days. Please update new license <a href='%2\$s' target='_blank'>%2\$s</a>.", 'aesirx-consent'), $daysLeft, 'https://aesirx.io/licenses'), aesirx_analytics_escape_html());
+      return wp_kses(sprintf(__("Your trial license ends in %1\$s days. Please update new license <a href='%2\$s' target='_blank'>%2\$s</a>.", 'aesirx-analytics'), $daysLeft, 'https://aesirx.io/licenses'), aesirx_analytics_escape_html());
     }
   } else {
     $error_message = $responsePost['response']['message'];
     return wp_kses(
         sprintf(
-            __("Something went wrong: %1\$s. Please contact the administrator.", 'aesirx-consent'),
+            __("Something went wrong: %1\$s. Please contact the administrator.", 'aesirx-analytics'),
             $error_message,
         ),
         aesirx_analytics_escape_html()

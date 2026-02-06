@@ -1,5 +1,5 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 use AesirxAnalytics\AesirxAnalyticsMysqlHelper;
 
 class AesirX_Analytics_Get_Unique_UTM_Links extends AesirxAnalyticsMysqlHelper

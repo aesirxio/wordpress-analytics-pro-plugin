@@ -1,6 +1,6 @@
 <?php
 
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 use AesirxAnalytics\AesirxAnalyticsMysqlHelper;
 
 Class AesirX_Analytics_Get_Datastream_UTM_Detail extends AesirxAnalyticsMysqlHelper
@@ -21,9 +21,10 @@ Class AesirX_Analytics_Get_Datastream_UTM_Detail extends AesirxAnalyticsMysqlHel
         }
 
         $table = $wpdb->prefix . 'analytics_utm';
-
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $row = $wpdb->get_row(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "SELECT * FROM $table WHERE id = %s AND domain = %s LIMIT 1",
                 $id,
                 $domain

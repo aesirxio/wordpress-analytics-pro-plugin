@@ -1,5 +1,5 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 global $wpdb;
 
 $aesirx_analytics_pro_sql = [];

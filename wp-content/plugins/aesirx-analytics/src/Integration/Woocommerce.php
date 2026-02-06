@@ -1,6 +1,7 @@
 <?php
 
 namespace AesirxAnalytics\Integration;
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 use AesirxAnalytics\Log\LoggerInterface;
 use AesirxAnalytics\Log\NullableLogger;

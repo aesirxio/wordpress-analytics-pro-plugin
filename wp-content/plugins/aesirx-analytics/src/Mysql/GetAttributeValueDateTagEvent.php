@@ -1,6 +1,6 @@
 <?php
 
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 use AesirxAnalytics\AesirxAnalyticsMysqlHelper;
 
 Class AesirX_Analytics_Get_Attribute_Value_Date_Tag_Event extends AesirxAnalyticsMysqlHelper
@@ -118,9 +118,10 @@ Class AesirX_Analytics_Get_Attribute_Value_Date_Tag_Event extends AesirxAnalytic
             GROUP BY date, e.event_name
             HAVING metric_value > 0 OR engagement_value > 0
         ";
-
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $rows = $wpdb->get_results(
-            $wpdb->prepare($tag_sql, $bind),
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+            $wpdb->prepare( $tag_sql, $bind ),
             ARRAY_A
         );
 

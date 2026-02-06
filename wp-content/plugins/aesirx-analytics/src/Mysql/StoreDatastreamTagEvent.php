@@ -1,6 +1,6 @@
 <?php
 
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 use AesirxAnalytics\AesirxAnalyticsMysqlHelper;
 
 Class AesirX_Analytics_Store_Datastream_Tag_Event extends AesirxAnalyticsMysqlHelper
@@ -23,7 +23,9 @@ Class AesirX_Analytics_Store_Datastream_Tag_Event extends AesirxAnalyticsMysqlHe
 
         // 3️⃣ Update existing Event Name
         if ($id) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
             $existing = $wpdb->get_row(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->prepare("SELECT * FROM $table WHERE id = %s", $id),
                 ARRAY_A
             );
@@ -59,14 +61,16 @@ Class AesirX_Analytics_Store_Datastream_Tag_Event extends AesirxAnalyticsMysqlHe
             }
 
             if (!empty($update_data)) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
                 $wpdb->update(
                     $table,
                     $update_data,
                     ['id' => $id]
                 );
             }
-
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
             $row = $wpdb->get_row(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
                 $wpdb->prepare("SELECT * FROM $table WHERE id = %s", $id),
                 ARRAY_A
             );
@@ -75,8 +79,11 @@ Class AesirX_Analytics_Store_Datastream_Tag_Event extends AesirxAnalyticsMysqlHe
         }
         
         // 4️⃣ Prevent duplicate event_name per domain
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $duplicate = $wpdb->get_var(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "SELECT COUNT(*) FROM $table WHERE domain = %s AND event_name = %s",
                 $params['domain'],
                 $params['event_name']
@@ -93,7 +100,7 @@ Class AesirX_Analytics_Store_Datastream_Tag_Event extends AesirxAnalyticsMysqlHe
 
          // 5️⃣ Insert new Tag Event
         $new_id = wp_generate_uuid4();
-
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
         $wpdb->insert($table, [
             'id' => $new_id,
             'event_name' => $params['event_name'],
@@ -104,8 +111,9 @@ Class AesirX_Analytics_Store_Datastream_Tag_Event extends AesirxAnalyticsMysqlHe
             'is_generated' => !empty($params['is_generated']),
             'created_at' => $now,
         ]);
-
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $row = $wpdb->get_row(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
             $wpdb->prepare("SELECT * FROM $table WHERE id = %s", $new_id),
             ARRAY_A
         );

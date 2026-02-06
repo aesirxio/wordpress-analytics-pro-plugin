@@ -1,7 +1,7 @@
 <?php
 
 namespace AesirxAnalytics;
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 use WP_Error;
 
 if (!class_exists('AesirxAnalyticsMysqlHelper')) {
@@ -21,7 +21,7 @@ if (!class_exists('AesirxAnalyticsMysqlHelper')) {
 
             // used placeholders and $wpdb->prepare() in variable $total_sql
             // doing direct database calls to custom tables
-            $total_elements = (int) $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $total_elements = (int) $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
                 $wpdb->prepare($total_sql, $bind) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             );
            
@@ -40,7 +40,7 @@ if (!class_exists('AesirxAnalyticsMysqlHelper')) {
                     } else {
                         // used placeholders and $wpdb->prepare() in variable $sql
                         // doing direct database calls to custom tables
-                        $collection = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,
+                        $collection = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
                             $wpdb->prepare($sql, $bind) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
                             , ARRAY_A
                         );
@@ -60,7 +60,7 @@ if (!class_exists('AesirxAnalyticsMysqlHelper')) {
                         wp_cache_set( $key, $collection, $group, $options['cache_time'] );
                     }
                 } else {
-                    $collection = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,
+                    $collection = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter
                         $wpdb->prepare($sql, $bind) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
                         , ARRAY_A
                     );
@@ -1419,42 +1419,33 @@ if (!class_exists('AesirxAnalyticsMysqlHelper')) {
             return $map;
         }
 
-        function aesirx_analytics_batch_head_requests(array $urls, int $timeout = 3): array
-        {
-            $multi = curl_multi_init();
-            $handles = [];
+        function aesirx_analytics_batch_head_requests( array $urls, int $timeout = 3 ): array {
+            if ( empty( $urls ) ) {
+                return [];
+            }
+
+            $requests = [];
+            foreach ( $urls as $url ) {
+                $requests[ $url ] = [
+                    'url'     => esc_url_raw( $url ),
+                    'type'    => 'HEAD',
+                    'timeout' => $timeout,
+                    'verify'  => false,
+                ];
+            }
+
+            // Requests is bundled with WordPress
+            $responses = \Requests::request_multiple( $requests );
+
             $results = [];
 
-            foreach ($urls as $url) {
-                $ch = curl_init($url);
-                curl_setopt_array($ch, [
-                    CURLOPT_NOBODY => true,
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_TIMEOUT => $timeout,
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_SSL_VERIFYPEER => false,
-                ]);
-                curl_multi_add_handle($multi, $ch);
-                $handles[$url] = $ch;
-            }
-
-            do {
-                curl_multi_exec($multi, $running);
-                curl_multi_select($multi);
-            } while ($running > 0);
-
-            foreach ($handles as $url => $ch) {
-                $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                if ($code === 0) {
-                    $results[$url] = null; // unreachable
+            foreach ( $responses as $url => $response ) {
+                if ( $response instanceof \Requests_Response ) {
+                    $results[ $url ] = (int) $response->status_code;
                 } else {
-                    $results[$url] = $code;
+                    $results[ $url ] = null; // unreachable / error
                 }
-                curl_multi_remove_handle($multi, $ch);
-                curl_close($ch);
             }
-
-            curl_multi_close($multi);
 
             return $results;
         }

@@ -55,7 +55,7 @@ function aesirx_analytics_pro_config_is_ok(string $isStorage = null): bool {
 if (aesirx_analytics_pro_config_is_ok()) {
     add_action('wp_enqueue_scripts', function (): void {
         if (!aesirx_analytics_pro_plugin_check_consent_active()) {
-            wp_register_script('aesirx-analytics', plugins_url('assets/vendor/statistic.js', __FILE__), [], false,  array(
+            wp_register_script('aesirx-analytics', plugins_url('assets/vendor/statistic.js', __FILE__), [], '1.0.0',  array(
                 'in_footer' => false,
             ));
         }
@@ -229,7 +229,7 @@ function aesirx_analytics_pro_initialize_function() {
                 foreach ($sql as $each_query) {
                     // Used placeholders and $wpdb->prepare() in variable $each_query
                     // Need $wpdb->query() for ALTER TABLE
-                    $wpdb->query($each_query); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+                    $wpdb->query($each_query); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
                 }
             }
         }
