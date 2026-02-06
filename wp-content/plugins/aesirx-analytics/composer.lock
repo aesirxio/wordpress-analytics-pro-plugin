@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/aesirxio/aesirx-analytics-lib.git",
-                "reference": "b26fac81c7b480641f32edc5fd476216f754577b"
+                "reference": "f3d79951054dba166a2a1de4d61a321d15203b70"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aesirxio/aesirx-analytics-lib/zipball/b26fac81c7b480641f32edc5fd476216f754577b",
-                "reference": "b26fac81c7b480641f32edc5fd476216f754577b",
+                "url": "https://api.github.com/repos/aesirxio/aesirx-analytics-lib/zipball/f3d79951054dba166a2a1de4d61a321d15203b70",
+                "reference": "f3d79951054dba166a2a1de4d61a321d15203b70",
                 "shasum": ""
             },
             "require": {
@@ -40,7 +40,7 @@
             "support": {
                 "source": "https://github.com/aesirxio/aesirx-analytics-lib/tree/master"
             },
-            "time": "2026-02-03T08:00:48+00:00"
+            "time": "2026-02-04T10:22:19+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

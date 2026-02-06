@@ -33,8 +33,8 @@ Class AesirX_Analytics_Start_Fingerprint extends AesirxAnalyticsMysqlHelper
                     $isTrial = json_decode($bodyCheckLicense)->result->isTrial ?? false;
                     if ($isTrial !== true) {
                         $options['require_change_license'] = false;
-                        if(!json_decode($bodyCheckLicense)->result->success || json_decode($bodyCheckLicense)->result->subscription_product !== "product-aesirx-cmp") {
-                            $checkTrial = aesirx_analytics_get_api('https://api.aesirx.io/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=member&task=validateWPDomain&api=hal&domain='.rawurlencode($serverName));
+                        if(!json_decode($bodyCheckLicense)->result->success || json_decode($bodyCheckLicense)->result->subscription_product !== "product-aesirx-analytics") {
+                            $checkTrial = aesirx_analytics_get_api('https://api.aesirx.io/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=member&task=validateWPDomain&api=hal&domain='.rawurlencode($serverName).'&package=product-aesirx-analytics');
                             $body = $checkTrial && wp_remote_retrieve_body($checkTrial);
                             if(!json_decode($body)->result->success) {
                                 $options['license_expired'] = true;
@@ -76,7 +76,7 @@ Class AesirX_Analytics_Start_Fingerprint extends AesirxAnalyticsMysqlHelper
             $current_time = new DateTime('now', new DateTimeZone('UTC')); // Current time in UTC
             $expiry_time = new DateTime($options['trial_date_expired'], new DateTimeZone('UTC'));
             if (!$options['checked_trial'] || ($current_time > $expiry_time && !$options['trial_end'])) {
-                $checkTrial = aesirx_analytics_get_api('https://api.aesirx.io/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=member&task=validateWPDomain&api=hal&domain='.rawurlencode($serverName));
+                $checkTrial = aesirx_analytics_get_api('https://api.aesirx.io/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=member&task=validateWPDomain&api=hal&domain='.rawurlencode($serverName).'&package=product-aesirx-analytics');
                 $body = wp_remote_retrieve_body($checkTrial);
                 $options['checked_trial'] = true;
                 if(!json_decode($body)->result->success) {

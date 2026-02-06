@@ -203,7 +203,7 @@ Class AesirX_Analytics_Get_Live_Visitors_List extends AesirxAnalyticsMysqlHelper
             // --------------------------------------------------
             $utm_value = 0;
             $utm_campaign_label = null;
-            $normalized_url = $second->url;
+            $normalized_url = str_replace('/?', '?', $second->url);
             $utm_key = $normalized_url;
 
             if (isset($utm_map[$utm_key])) {

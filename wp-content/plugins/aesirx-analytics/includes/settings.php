@@ -9,7 +9,7 @@ add_action('admin_init', function () {
     $valid = true;
     $input = (array) $value;
 
-    if ($input['storage'] === 'internal') {
+    if (isset($input['storage']) && $input['storage'] === 'internal') {
       if (empty($input['license'])) {
         add_settings_error(
           'aesirx_analytics_pro_plugin_options',
@@ -18,7 +18,7 @@ add_action('admin_init', function () {
           'warning'
         );
       }
-    } elseif ($input['storage'] === 'external') {
+    } elseif (isset($input['storage']) && $input['storage'] === 'external') {
       if (empty($input['domain'])) {
         $valid = false;
         add_settings_error(
@@ -86,7 +86,7 @@ add_action('admin_init', function () {
   function aesirx_analytics_pro_warning_missing_license() {
     $options = get_option('aesirx_analytics_pro_plugin_options');
 
-    if (!$options || (empty($options['license']) && $options['storage'] === "internal")) {
+    if (!$options || (empty($options['license']) && isset($input['storage']) && $options['storage'] === "internal")) {
       ?>
         <div class="notice-warning notice notice-bi" style="display: none;">
             <p><?php echo esc_html__( 'Please register your license at signup.aesirx.io.', 'aesirx-analytics' ); ?></p>
@@ -271,50 +271,50 @@ add_action('admin_init', function () {
     'aesirx_analytics_settings'
   );
   
-  if (is_plugin_active('wp-crontrol/wp-crontrol.php')) {
-    add_settings_field(
-      'aesirx_analytics_enable_cronjob',
-      esc_html__('Enable cronjob', 'aesirx-analytics'),
-      function () {
-          $options = get_option('aesirx_analytics_pro_plugin_options', []);
-          $checked = 'checked="checked"';
-          $storage = $options['enable_cronjob'] ?? 'true';
-          // using custom function to escape HTML
-          echo wp_kses('
-          <label>' . esc_html__('Yes', 'aesirx-analytics') . ' <input type="radio" id="aesirx_analytics-enable_cronjob" name="aesirx_analytics_pro_plugin_options[enable_cronjob]" ' .
-               ($storage === 'true' ? $checked : '') .
-               ' value="true"  /></label>
-          <label>' . esc_html__('No', 'aesirx-analytics') . ' <input type="radio" id="aesirx_analytics-enable_cronjob" name="aesirx_analytics_pro_plugin_options[enable_cronjob]" ' .
-               ($storage === 'false' ? $checked : '') .
-               ' value="false" /></label>',aesirx_analytics_escape_html());
-          echo wp_kses('<p class="description"><strong>'.esc_html__('Description', 'aesirx-analytics').': </strong>'.esc_html__('This setting allows you to capture the geographic location of users when tracking their activity. The location data can be used to improve personalized experiences or for location-based analytics.', 'aesirx-analytics').'</p>',aesirx_analytics_escape_html());
-      },
-      'aesirx_analytics_plugin',
-      'aesirx_analytics_settings'
-    );
+  // if (is_plugin_active('wp-crontrol/wp-crontrol.php')) {
+  //   add_settings_field(
+  //     'aesirx_analytics_enable_cronjob',
+  //     esc_html__('Enable cronjob', 'aesirx-analytics'),
+  //     function () {
+  //         $options = get_option('aesirx_analytics_pro_plugin_options', []);
+  //         $checked = 'checked="checked"';
+  //         $storage = $options['enable_cronjob'] ?? 'true';
+  //         // using custom function to escape HTML
+  //         echo wp_kses('
+  //         <label>' . esc_html__('Yes', 'aesirx-analytics') . ' <input type="radio" id="aesirx_analytics-enable_cronjob" name="aesirx_analytics_pro_plugin_options[enable_cronjob]" ' .
+  //              ($storage === 'true' ? $checked : '') .
+  //              ' value="true"  /></label>
+  //         <label>' . esc_html__('No', 'aesirx-analytics') . ' <input type="radio" id="aesirx_analytics-enable_cronjob" name="aesirx_analytics_pro_plugin_options[enable_cronjob]" ' .
+  //              ($storage === 'false' ? $checked : '') .
+  //              ' value="false" /></label>',aesirx_analytics_escape_html());
+  //         echo wp_kses('<p class="description"><strong>'.esc_html__('Description', 'aesirx-analytics').': </strong>'.esc_html__('This setting allows you to capture the geographic location of users when tracking their activity. The location data can be used to improve personalized experiences or for location-based analytics.', 'aesirx-analytics').'</p>',aesirx_analytics_escape_html());
+  //     },
+  //     'aesirx_analytics_plugin',
+  //     'aesirx_analytics_settings'
+  //   );
 
-    add_settings_field(
-      'aesirx_analytics_geo_cron_time',
-      esc_html__('Geo cron time', 'aesirx-analytics'),
-      function () {
-        $options = get_option('aesirx_analytics_pro_plugin_options', []);
-        echo "<div class='input_container'>";
-        echo wp_kses("<input id='aesirx_analytics_geo_cron_time' class='aesirx_consent_input' placeholder='".esc_attr__('Geo cron time', 'aesirx-analytics')."' name='aesirx_analytics_pro_plugin_options[geo_cron_time]' type='text' value='" .
-        esc_attr($options['geo_cron_time'] ?? '') .
-        "' />", aesirx_analytics_escape_html());
-        echo wp_kses("
-          <div class='input_information'>
-            <img width='20px' height='20px' src='". plugins_url( 'aesirx-analytics/assets/images-plugin/infor_icon.png')."' />
-            ".sprintf(__("<div class='input_information_content'>
-            This function runs a cron job at set intervals ('X' time) to refresh and update the user’s location data. This ensures that location tracking remains accurate over time without requiring manual intervention.</div>", 'aesirx-analytics'), '')."
-          </div>
-        ", aesirx_analytics_escape_html());
-        echo "</div>";
-      },
-      'aesirx_analytics_plugin',
-      'aesirx_analytics_settings'
-    );
-  }
+  //   add_settings_field(
+  //     'aesirx_analytics_geo_cron_time',
+  //     esc_html__('Geo cron time', 'aesirx-analytics'),
+  //     function () {
+  //       $options = get_option('aesirx_analytics_pro_plugin_options', []);
+  //       echo "<div class='input_container'>";
+  //       echo wp_kses("<input id='aesirx_analytics_geo_cron_time' class='aesirx_consent_input' placeholder='".esc_attr__('Geo cron time', 'aesirx-analytics')."' name='aesirx_analytics_pro_plugin_options[geo_cron_time]' type='text' value='" .
+  //       esc_attr($options['geo_cron_time'] ?? '') .
+  //       "' />", aesirx_analytics_escape_html());
+  //       echo wp_kses("
+  //         <div class='input_information'>
+  //           <img width='20px' height='20px' src='". plugins_url( 'aesirx-analytics/assets/images-plugin/infor_icon.png')."' />
+  //           ".sprintf(__("<div class='input_information_content'>
+  //           This function runs a cron job at set intervals ('X' time) to refresh and update the user’s location data. This ensures that location tracking remains accurate over time without requiring manual intervention.</div>", 'aesirx-analytics'), '')."
+  //         </div>
+  //       ", aesirx_analytics_escape_html());
+  //       echo "</div>";
+  //     },
+  //     'aesirx_analytics_plugin',
+  //     'aesirx_analytics_settings'
+  //   );
+  // }
 
   add_settings_field(
     'aesirx_analytics_track_ecommerce',
@@ -323,7 +323,7 @@ add_action('admin_init', function () {
 
         $options = get_option('aesirx_analytics_pro_plugin_options', []);
         $checked = 'checked="checked"';
-        $storage = $options['track_ecommerce'] ?? 'true';
+        $storage = $options['track_ecommerce'] ?? 'false';
         // using custom function to escape HTML
         echo wp_kses('
         <label>' . esc_html__('Yes', 'aesirx-analytics') . ' <input type="radio" class="analytic-track_ecommerce-class" name="aesirx_analytics_pro_plugin_options[track_ecommerce]" ' .
@@ -746,8 +746,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
 
     $aesirxClientId = $analyticsProOptions['clientid'];
     $aesirxClientSecret = $analyticsProOptions['secret'];
-    $aesirxUTMCurrency = $analyticsProOptions['utm_currency'] ?? 'USD';
-    $aesirxRealtimeSync = $analyticsProOptions['realtime_sync'] ?? '30';
+    $license = $analyticsProOptions['license'] ? $analyticsProOptions['license'] : (!$analyticsProOptions['trial_end'] ? 'trial' : "");
 
     $aesirxJWT = $analyticsProOptions['storage'] === "external" ? 'window.env.REACT_APP_HEADER_JWT="true"' : '';
 
@@ -768,11 +767,8 @@ add_action('admin_enqueue_scripts', function ($hook) {
       window.env.REACT_APP_CMP_LINK = "' . esc_url( $cmp_link ) . '";
 		  window.env.PUBLIC_URL= "' . esc_url(plugin_dir_url(__DIR__)) . '";
       window.env.STORAGE= "' . esc_html($analyticsProOptions['storage']) . '";
-      window.env.LICENSE= "' . esc_html($analyticsProOptions['license']) . '";
+      window.env.LICENSE= "' . esc_html($license) . '";
       window.env.REACT_APP_WOOCOMMERCE_MENU= "' . esc_html($analyticsProOptions['track_ecommerce']) . '";
-      window.env.REACT_APP_UTM_CURRENCY= "' . esc_html($aesirxUTMCurrency) . '";
-      window.env.REACT_APP_REALTIME_SYNC= "' . esc_html($aesirxRealtimeSync) . '";
-      
       ' . htmlspecialchars($aesirxJWT, ENT_NOQUOTES),
     );
   }
@@ -875,6 +871,45 @@ function aesirx_analytics_add_nonce_menu_item() {
 }
 add_action('admin_footer', 'aesirx_analytics_add_nonce_menu_item');
 
+function aesirx_analytics_trigger_trial() {
+  $urlPost = 'https://api.aesirx.io/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=member&task=validateWPDomain&api=hal';
+  $domain = isset($_SERVER['SERVER_NAME']) ? sanitize_text_field($_SERVER['SERVER_NAME']) : '';
+  $domain = preg_replace('/^www\./', '', $domain);
+  $args = array(
+      'headers' => array(
+          'Content-Type' => 'application/json',
+      ),
+      'body' => wp_json_encode( array(
+        'domain' => $domain,
+        'package' => 'product-aesirx-analytics'
+      ) ),
+  );
+
+  $responsePost = wp_remote_post( $urlPost, $args);
+  if ( $responsePost['response']['code'] === 200 ) {
+    $checkTrialAfterPost = aesirx_analytics_get_api(
+        'https://api.aesirx.io/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=member&task=validateWPDomain&api=hal&domain=' . rawurlencode($domain) . '&package=product-aesirx-analytics'
+    );
+    $body = wp_remote_retrieve_body($checkTrialAfterPost);
+    if(json_decode($body)->result->success) {
+      $dateExpired = new DateTime(json_decode($body)->result->date_expired);
+      $currentDate = new DateTime();
+      $interval = $currentDate->diff($dateExpired);
+      $daysLeft = $interval->days;
+      return wp_kses(sprintf(__("Your trial license ends in %1\$s days. Please update new license <a href='%2\$s' target='_blank'>%2\$s</a>.", 'aesirx-consent'), $daysLeft, 'https://aesirx.io/licenses'), aesirx_analytics_escape_html());
+    }
+  } else {
+    $error_message = $responsePost['response']['message'];
+    return wp_kses(
+        sprintf(
+            __("Something went wrong: %1\$s. Please contact the administrator.", 'aesirx-consent'),
+            $error_message,
+        ),
+        aesirx_analytics_escape_html()
+    );
+  }
+}
+
 function aesirx_analytics_license_info() {
   $options = get_option('aesirx_analytics_pro_plugin_options', []);
   $domain = isset($_SERVER['SERVER_NAME']) ? sanitize_text_field($_SERVER['SERVER_NAME']) : '';
@@ -894,7 +929,7 @@ function aesirx_analytics_license_info() {
     if (is_array($response) && isset($response['response']['code']) && $response['response']['code'] === 200) {
       $isTrial = json_decode($bodyCheckLicense)->result->isTrial ?? false;
       if ($isTrial !== true) {
-        if(!json_decode($bodyCheckLicense)->result->success || json_decode($bodyCheckLicense)->result->subscription_product !== "product-aesirx-cmp") {
+        if(!json_decode($bodyCheckLicense)->result->success || json_decode($bodyCheckLicense)->result->subscription_product !== "product-aesirx-analytics") {
           if($currentLicense) {
             $options['current_license'] = '';
             update_option('aesirx_analytics_pro_plugin_options', $options);
@@ -960,15 +995,18 @@ function aesirx_analytics_license_info() {
     }
   };
   if(empty($options['license']) || $isTrial) {
-    $checkTrial = aesirx_analytics_get_api('https://api.aesirx.io/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=member&task=validateWPDomain&api=hal&domain='.rawurlencode($domain));
+    $checkTrial = aesirx_analytics_get_api('https://api.aesirx.io/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=member&task=validateWPDomain&api=hal&domain='.rawurlencode($domain).'&package=product-aesirx-analytics');
     $body = wp_remote_retrieve_body($checkTrial);
+    $options = get_option('aesirx_analytics_pro_plugin_options', []);
     if($body) {
-      if(json_decode($body)->result->success) {
+      if(isset(json_decode($body)->result->success) && json_decode($body)->result->success) {
         $dateExpired = new DateTime(json_decode($body)->result->date_expired);
         $currentDate = new DateTime();
         $interval = $currentDate->diff($dateExpired);
         $daysLeft = $interval->days;
         $hoursLeft = $interval->h;
+        $options['trial_end'] = false;
+        update_option('aesirx_analytics_pro_plugin_options', $options);
         if ($daysLeft === 0) {
           $hoursLeft = max(1, $hoursLeft); // Ensure at least 1 hour is shown
           return wp_kses(
@@ -1008,7 +1046,9 @@ function aesirx_analytics_license_info() {
           );
         }
       } else {
-        if(json_decode($body)->result->date_expired) {
+        $options['trial_end'] = true;
+        update_option('aesirx_analytics_pro_plugin_options', $options);
+        if(isset(json_decode($body)->result->date_expired) && json_decode($body)->result->date_expired) {
           return wp_kses(sprintf(__("Your free trials has ended. Please update your license. <a href='%1\$s' target='_blank'>%1\$s</a>.", 'aesirx-analytics'), 'https://aesirx.io/licenses'), aesirx_analytics_escape_html());
         } else {
           return aesirx_analytics_trigger_trial();

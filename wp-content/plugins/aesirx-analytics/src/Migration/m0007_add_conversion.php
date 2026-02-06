@@ -18,7 +18,7 @@ $aesirx_analytics_pro_sql[] = "
         `revenue_discount` INT(10) UNSIGNED NOT NULL,
         `revenue_shipping` INT(10) UNSIGNED NOT NULL,
         `conversion_type` varchar(255) NOT NULL,
-        UNIQUE KEY `idx_unique` (`extension`, `conversion_type`, `uuid`, `order_id`),
+        UNIQUE KEY `idx_unique` (`extension`(100), `conversion_type`(100), `uuid`, `order_id`(100)),
         UNIQUE KEY `uuid` (`uuid`)
     ) ENGINE=InnoDB;";
 

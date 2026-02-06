@@ -1391,5 +1391,72 @@ if (!class_exists('AesirxAnalyticsMysqlHelper')) {
                 ],
             ];
         }
+
+        protected function aesirx_analytics_get_og_map(array $urls): array
+        {
+            $map = [];
+
+            foreach ($urls as $url) {
+                $cache_key = 'aesirx_og_' . md5($url);
+                $cached = get_transient($cache_key);
+
+                if ($cached !== false) {
+                    $map[$url] = $cached;
+                    continue;
+                }
+
+                $og = $this->aesirx_analytics_fetch_open_graph_data($url);
+
+                set_transient(
+                    $cache_key,
+                    $og ?: null,
+                    DAY_IN_SECONDS
+                );
+
+                $map[$url] = $og;
+            }
+
+            return $map;
+        }
+
+        function aesirx_analytics_batch_head_requests(array $urls, int $timeout = 3): array
+        {
+            $multi = curl_multi_init();
+            $handles = [];
+            $results = [];
+
+            foreach ($urls as $url) {
+                $ch = curl_init($url);
+                curl_setopt_array($ch, [
+                    CURLOPT_NOBODY => true,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_TIMEOUT => $timeout,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_SSL_VERIFYPEER => false,
+                ]);
+                curl_multi_add_handle($multi, $ch);
+                $handles[$url] = $ch;
+            }
+
+            do {
+                curl_multi_exec($multi, $running);
+                curl_multi_select($multi);
+            } while ($running > 0);
+
+            foreach ($handles as $url => $ch) {
+                $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                if ($code === 0) {
+                    $results[$url] = null; // unreachable
+                } else {
+                    $results[$url] = $code;
+                }
+                curl_multi_remove_handle($multi, $ch);
+                curl_close($ch);
+            }
+
+            curl_multi_close($multi);
+
+            return $results;
+        }
     }
 }

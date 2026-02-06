@@ -3202,8 +3202,10 @@ aesirx-analytics@^2.4.5:
     react-dom "18"
     react-toastify "^9.1.3"
 
-"aesirx-bi-app@file:.yalc/aesirx-bi-app":
-  version "2.8.2"
+aesirx-bi-app@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/aesirx-bi-app/-/aesirx-bi-app-2.9.0.tgz#6a48c82437762961637441cbfd70c2ba2c7b47d6"
+  integrity sha512-u/88JVULXkuDttTMtCSWwkDR/kJRNpwxK0avPl2qdARDK6KOWr+pYuk7GpwbTxSlwi5i+KjQWBc68fqm+3cviQ==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^6.4.0"
     "@fortawesome/free-solid-svg-icons" "^6.4.0"
@@ -3319,10 +3321,10 @@ aesirx-sso@*, aesirx-sso@^1.4.18, aesirx-sso@^1.5.0:
     wagmi "^1.3.2"
     yup "^1.3.2"
 
-aesirx-uikit@*, aesirx-uikit@^1.3.6:
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/aesirx-uikit/-/aesirx-uikit-1.3.6.tgz#283a19ce0aa2a88446b255fd12dd18d9e95230e8"
-  integrity sha512-j5vcvrARYowwHlBQV5teAQ+6dnoCyabluqS3Syu1bkqcKqelCrDDRhEAGeykx6cJgpdQ/9B8/Qsn6Qyyjr0wMA==
+aesirx-uikit@*, aesirx-uikit@^1.3.8:
+  version "1.3.8"
+  resolved "https://registry.yarnpkg.com/aesirx-uikit/-/aesirx-uikit-1.3.8.tgz#ad8498400091e541d0f710cdc41a64ef39e30082"
+  integrity sha512-ilybhx+EetcedmMKz2/rj/XvaWxb3X/zmHYIIeTk+ayA62xp+sFWSgLjh8rfA7tnEIEFR4zVUbBogUZ7nQEJow==
   dependencies:
     "@ckeditor/ckeditor5-build-classic" "^43.0.0"
     "@ckeditor/ckeditor5-core" "^43.0.0"
