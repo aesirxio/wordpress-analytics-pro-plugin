@@ -309,65 +309,65 @@ msgstr ""
 msgid "Save settings"
 msgstr ""
 
-#: includes/settings.php:937
+#: includes/settings.php:939
 msgid "Your license is expried or not found. Please update new license <a href='%1$s' target='_blank'>%1$s</a>."
 msgstr ""
 
-#: includes/settings.php:944
+#: includes/settings.php:946
 msgid "Your domain is not match with your license. Please update domain in your license <a href='%1$s' target='_blank'>%1$s</a> and click <span class='verify_domain'>here</span> to verify again."
 msgstr ""
 
-#: includes/settings.php:958
-#: includes/settings.php:1024
+#: includes/settings.php:960
+#: includes/settings.php:1026
 msgid "You are using a lifetime license."
 msgstr ""
 
-#: includes/settings.php:964
-#: includes/settings.php:1030
+#: includes/settings.php:966
+#: includes/settings.php:1032
 msgid "year"
 msgid_plural "years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/settings.php:967
-#: includes/settings.php:1033
+#: includes/settings.php:969
+#: includes/settings.php:1035
 msgid "month"
 msgid_plural "months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/settings.php:970
-#: includes/settings.php:1036
+#: includes/settings.php:972
+#: includes/settings.php:1038
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/settings.php:975
+#: includes/settings.php:977
 msgid "Your license ends in %1$s. Please update your license <a href='%2$s' target='_blank'>%2$s</a>."
 msgstr ""
 
-#: includes/settings.php:987
+#: includes/settings.php:989
 msgid "Unknown error"
 msgstr ""
 
-#: includes/settings.php:990
+#: includes/settings.php:992
 msgid "Check license failed: %1$s. Please contact the administrator or update your license."
 msgstr ""
 
-#: includes/settings.php:1014
+#: includes/settings.php:1016
 msgid "Your trial license ends in %1$s hour(s). Please update your license <a href='%2$s' target='_blank'>here</a>."
 msgstr ""
 
-#: includes/settings.php:1041
+#: includes/settings.php:1043
 msgid "Your trial license ends in %1$s. Please update your license <a href='%2$s' target='_blank'>%2$s</a>."
 msgstr ""
 
-#: includes/settings.php:1052
+#: includes/settings.php:1054
 msgid "Your free trials has ended. Please update your license. <a href='%1$s' target='_blank'>%1$s</a>."
 msgstr ""
 
-#: includes/settings.php:1067
+#: includes/settings.php:1069
 #: src/AesirxAnalyticsMysqlHelper.php:1349
 msgid "Something went wrong. Please contact the administrator"
 msgstr ""
@@ -389,4 +389,16 @@ msgstr ""
 #: src/Mysql/StartFingerprint.php:85
 #: src/Mysql/StartFingerprint.php:92
 msgid "Your trial is ended. Please renew your license"
+msgstr ""
+
+#: includes/settings.php:901
+msgid "Your trial license ends in %1$s days. Please update new license <a href='%2$s' target='_blank'>%2$s</a>."
+msgstr ""
+
+#: includes/settings.php:907
+msgid "Something went wrong: %1$s. Please contact the administrator."
+msgstr ""
+
+#: src/Route/Middleware/IsBackendMiddleware.php:18
+msgid "Permission denied!"
 msgstr ""
