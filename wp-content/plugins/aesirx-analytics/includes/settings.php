@@ -725,15 +725,16 @@ add_action('admin_enqueue_scripts', function ($hook) {
       $hook === 'aesirx-analytics_page_aesirx-bi-woocommerce' ||
       $hook === 'admin_page_aesirx-bi-woocommerce-product' ||
       $hook === 'admin_page_aesirx-bi-acquisition-campaigns') {
-    wp_enqueue_script('aesirx-analytics-notice', plugins_url('assets/vendor/aesirx-analytics-notice.js', __DIR__), array('jquery'), '1.0.0', true);
+    wp_enqueue_script('aesirx-analytics-notice', plugins_url('assets/vendor/aesirx-analytics-notice.js', __DIR__), array('jquery'), '1.0.1', true);
     $analyticsProOptions = get_option('aesirx_analytics_pro_plugin_options');
 
     $protocols = ['http://', 'https://'];
     $aesirxDomain = str_replace($protocols, '', site_url());
     $aesirxStreams = [['name' => get_bloginfo('name'), 'domain' => $aesirxDomain]];
+    $origin = wp_parse_url( home_url(), PHP_URL_SCHEME ) . '://' . wp_parse_url( home_url(), PHP_URL_HOST );
     $aesirxEndpoint =
       ($analyticsProOptions['storage'] ?? 'internal') === 'internal'
-        ? get_bloginfo('url')
+        ? $origin
         : rtrim($analyticsProOptions['domain'] ?? '', '/');
 
     $aesirxManifest = json_decode(

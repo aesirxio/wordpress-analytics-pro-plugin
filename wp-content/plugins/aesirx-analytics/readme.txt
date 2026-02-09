@@ -3,7 +3,7 @@ Contributors: aesirx,vikingtechguy,nixa999,nguyenbao10,vietnguyen1406,devphutran
 Tags: analytics, wordpress analytics, statistics, tracking, visitor tracking
 Requires at least: 5.9
 Tested up to: 6.9
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Requires PHP: 7.4
 License: GPL 3.0
 
@@ -64,6 +64,9 @@ The human readable source code for the AesirX Analytics files can be found here 
 The Terms of service can be found here https://aesirx.io/terms-conditions and the Privacy policy is here https://aesirx.io/privacy-policy.
 
 == Changelog ==
+
+= 1.0.1 =
+Fix multiple language
 
 = 1.0.0 =
 Analytics Pro

@@ -3,7 +3,7 @@
  * Plugin Name: AesirX Analytics
  * Plugin URI: https://analytics.aesirx.io?utm_source=wpplugin&utm_medium=web&utm_campaign=wordpress&utm_id=aesirx&utm_term=wordpress&utm_content=analytics
  * Description: Aesirx Analytics plugin. When you join forces with AesirX, you're not just becoming a Partner - you're also becoming a freedom fighter in the battle for privacy! Earn 25% Affiliate Commission <a href="https://aesirx.io/partner?utm_source=wpplugin&utm_medium=web&utm_campaign=wordpress&utm_id=aesirx&utm_term=wordpress&utm_content=analytics">[Click to Join]</a>
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: aesirx.io
  * Author URI: https://aesirx.io/
  * Domain Path: /languages
@@ -55,24 +55,24 @@ function aesirx_analytics_pro_config_is_ok(string $isStorage = null): bool {
 if (aesirx_analytics_pro_config_is_ok()) {
     add_action('wp_enqueue_scripts', function (): void {
         if (!aesirx_analytics_pro_plugin_check_consent_active()) {
-            wp_register_script('aesirx-analytics', plugins_url('assets/vendor/statistic.js', __FILE__), [], '1.0.0',  array(
+            wp_register_script('aesirx-analytics', plugins_url('assets/vendor/statistic.js', __FILE__), [], '1.0.1',  array(
                 'in_footer' => false,
             ));
         }
         wp_enqueue_script('aesirx-analytics');
 
         $options = get_option('aesirx_analytics_pro_plugin_options');
-
+        $origin = wp_parse_url( home_url(), PHP_URL_SCHEME ) . '://' . wp_parse_url( home_url(), PHP_URL_HOST );
         $domain =
             ($options['storage'] ?? 'internal') === 'internal'
-                ? get_bloginfo('url')
+                ? $origin
                 : rtrim($options['domain'] ?? '', '/');
 
         $trackEcommerce = ($options['track_ecommerce'] ?? 'false') === 'true' ? 'true': 'false';
         $clientId = $options['clientid'] ?? '';
         $secret = $options['secret'] ?? '';
 
-        $domain = get_bloginfo('url');
+        $domain = $origin;
 
         wp_add_inline_script(
             'aesirx-analytics',
